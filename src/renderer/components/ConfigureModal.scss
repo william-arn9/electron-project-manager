@@ -1,0 +1,106 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+h3 {
+  text-transform: capitalize;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+span {
+  font-size: 28px;
+  margin-right: 0.5rem;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.submit-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-right: 12px;
+
+  &:hover {
+    background: #0056b3;
+  }
+}
+.cancel-button {
+  background: #ffffff;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.3s;
+  transform: scale(0.95);
+
+  &:hover {
+    color: #0056b3;
+    border-color: #0056b3;
+  }
+}
+
+i {
+  margin: auto 0; 
+  width: 100%;
+  text-align: center;
+  &.fa-react {
+    color: #61DBFB;
+  }
+  &.fa-angular {
+    color: #dd1b16;
+  }
+  &.fa-vuejs {
+    color: #41b883;
+  }
+}

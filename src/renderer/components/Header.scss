@@ -1,0 +1,16 @@
+nav {
+  width: calc(100vw - 32px);
+  background-color: #1E3A8A;
+  padding: 1rem;
+
+  .nav-button {
+    color: #ffffff;
+    border-radius: 6px;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background-color: #89898945;
+    }
+  }
+}

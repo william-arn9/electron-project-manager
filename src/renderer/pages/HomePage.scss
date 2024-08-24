@@ -1,0 +1,39 @@
+h2 {
+  margin: 0.5rem 0;
+  font-size: 28px;
+  width: 100%;
+  text-align: center;
+}
+
+.projects-container {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.button-bar {
+  width: 100%;
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+button {
+  width: 140px;
+  padding: 0.5rem;
+  border: 2px solid #1E3A8A;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+  -webkit-box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+  -moz-box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+
+  i {
+    font-size: 32px;
+  }
+}
