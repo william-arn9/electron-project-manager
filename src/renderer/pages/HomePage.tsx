@@ -5,6 +5,7 @@ import ConfigureModal from '../components/ConfigureModal';
 import { useNavigate } from 'react-router-dom';
 import { NormalizerService } from '../services/ProjectNormalizer';
 import { ProjectCardData } from '../types/ProjectTypes';
+import { StorageService } from '../services/StorageService';
 
 const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(0);
@@ -15,7 +16,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    handleSearches();
+    handleSearches(true);
     return () => { };
   }, []);
 
@@ -24,15 +25,23 @@ const HomePage: React.FC = () => {
     navigate('new-project');
   };
 
-  const handleSearches = async () => {
+  const handleSearches = async (useCache?: boolean) => {
     setLoading(loading + 1);
     let resultConfig = await (window as any).electron.getProjects();
     resultConfig = resultConfig.map((p: any) => p = NormalizerService.transformFromTraditionalObject(p));
     setConfiguredProjects(resultConfig);
-    let resultDir = await (window as any).electron.searchNpmProjects();
-    resultDir = resultDir.map((p: any) => p = NormalizerService.transformFromPackageJson(p));
-    resultDir = resultDir.filter((p: ProjectCardData) => !resultConfig.find((confProj: any) => confProj.internalName === p.name ));
-    setDirProjects(resultDir);
+    const cachedProjects = StorageService.sessionGet('projects');
+    if(useCache && cachedProjects) {
+      console.log(cachedProjects);
+      setDirProjects(cachedProjects);
+    }
+    else {
+      let resultDir = await (window as any).electron.searchNpmProjects();
+      resultDir = resultDir.map((p: any) => p = NormalizerService.transformFromPackageJson(p));
+      resultDir = resultDir.filter((p: ProjectCardData) => !resultConfig.find((confProj: any) => confProj.internalName === p.name ));
+      setDirProjects(resultDir);
+      StorageService.sessionSet('projects', resultDir);
+    }
     setLoading(loading - 1);
   };
 
