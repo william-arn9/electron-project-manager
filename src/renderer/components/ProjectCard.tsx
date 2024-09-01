@@ -6,7 +6,6 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const optionsRef = useRef(null);
-  const { packageFile } = project;
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutsideOptions);
@@ -52,12 +51,12 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
   };
 
   const showIcon = () => {
-    switch(true) {
-      case !!packageFile?.dependencies.react:
+    switch(project.framework) {
+      case 'react':
         return (<i className="fa-brands fa-react"></i>)
-      case !!packageFile?.dependencies['@angular/core']:
+      case 'angular':
         return (<i className="fa-brands fa-angular"></i>)
-      case !!packageFile?.dependencies.vue:
+      case 'vue':
         return (<i className="fa-brands fa-vuejs"></i>)
       default:
         return (<i className="fa-brands fa-node-js"></i>)
@@ -67,7 +66,7 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
   return (
     <button className={`project-card ${deleted ? 'hidden' : ''}`} onDoubleClick={(e) => openProject(e)}>
       <div className="header">
-        <h5>{ kabobToCapitalCase(packageFile?.name) }</h5>
+        <h5>{ kabobToCapitalCase(project.name) }</h5>
         <a className="options" onClick={(e) => {handleOptionsClick(e)}}>
           <i className="fa-solid fa-ellipsis"></i>
         </a>

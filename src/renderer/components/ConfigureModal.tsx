@@ -12,22 +12,11 @@ interface ConfigureModalProps {
 const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [framework, setFramework] = useState('node');
-  const { packageFile } = project;
+  const [framework, setFramework] = useState(project.framework);
 
   useEffect(() => {
-    if (packageFile) {
-      if (packageFile.dependencies.react) {
-        setFramework('react');
-      } else if (packageFile.dependencies['@angular/core']) {
-        setFramework('angular');
-      } else if (packageFile.dependencies.vue) {
-        setFramework('vue');
-      } else {
-        setFramework('node');
-      }
-    }
-  }, [packageFile]);
+    setFramework(project.framework);
+  }, [project]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +24,7 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
     const proj = {
       name,
       description,
-      internalName: packageFile.name,
+      internalName: project.name,
       framework,
       id: uuidv4()
     };
@@ -46,12 +35,12 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
   };
 
   const showIcon = () => {
-    switch(true) {
-      case !!packageFile.dependencies.react:
+    switch(project.framework) {
+      case 'react':
         return (<i className="fa-brands fa-react"></i>)
-      case !!packageFile.dependencies['@angular/core']:
+      case 'angular':
         return (<i className="fa-brands fa-angular"></i>)
-      case !!packageFile.dependencies.vue:
+      case 'vue':
         return (<i className="fa-brands fa-vuejs"></i>)
       default:
         return (<i className="fa-brands fa-node-js"></i>)
@@ -66,7 +55,7 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <h3><span className="icon">{showIcon()}</span> { kabobToCapitalCase(packageFile.name) }</h3>
+        <h3><span className="icon">{showIcon()}</span> { kabobToCapitalCase(project.name) }</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>

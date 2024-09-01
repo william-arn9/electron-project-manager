@@ -3,6 +3,8 @@ import './HomePage.scss';
 import ProjectCard from '../components/ProjectCard';
 import ConfigureModal from '../components/ConfigureModal';
 import { useNavigate } from 'react-router-dom';
+import { NormalizerService } from '../services/ProjectNormalizer';
+import { ProjectCardData } from '../types/ProjectTypes';
 
 const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(0);
@@ -13,8 +15,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    handleDirSearch();
-    handleAppSearch();
+    handleSearches();
     return () => { };
   }, []);
 
@@ -23,20 +24,16 @@ const HomePage: React.FC = () => {
     navigate('new-project');
   };
 
-  const handleAppSearch = async () => {
+  const handleSearches = async () => {
     setLoading(loading + 1);
-    const result = await (window as any).electron.getProjects();
-    console.log(result);
+    let resultConfig = await (window as any).electron.getProjects();
+    resultConfig = resultConfig.map((p: any) => p = NormalizerService.transformFromTraditionalObject(p));
+    setConfiguredProjects(resultConfig);
+    let resultDir = await (window as any).electron.searchNpmProjects();
+    resultDir = resultDir.map((p: any) => p = NormalizerService.transformFromPackageJson(p));
+    resultDir = resultDir.filter((p: ProjectCardData) => !resultConfig.find((confProj: any) => confProj.internalName === p.name ));
+    setDirProjects(resultDir);
     setLoading(loading - 1);
-    setConfiguredProjects(result);
-  };
-
-  const handleDirSearch = async () => {
-    setLoading(loading + 1);
-    const result = await (window as any).electron.searchNpmProjects();
-    console.log(result);
-    setLoading(loading - 1);
-    setDirProjects(result);
   };
 
   const handleOpenModal = (context: any) => {
