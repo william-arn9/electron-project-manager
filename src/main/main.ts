@@ -83,12 +83,16 @@ ipcMain.handle('edit-project', (event, project: Project) => {
   storeService.editProject(project);
 });
 
+ipcMain.handle('delete-project', (event, project: Project) => {
+  storeService.deleteProject(project.id);
+});
+
 ipcMain.handle('search-npm-projects', async (event, directory: string) => {
   const projects = await searchForNpmProjects(directory);
   return projects;
 });
 
-ipcMain.handle('delete-project', async (event, directory: string) => {
+ipcMain.handle('delete-directory', async (event, directory: string) => {
   const projects = await deleteDirectory(directory);
   return projects;
 });

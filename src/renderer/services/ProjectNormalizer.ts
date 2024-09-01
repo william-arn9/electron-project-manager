@@ -12,8 +12,10 @@ export abstract class NormalizerService {
     return {
       name: packageJson?.name,
       framework,
+      path: project.path,
       version: packageJson?.version,
       description: packageJson?.description,
+      configured: false
     };
   }
   
@@ -21,9 +23,12 @@ export abstract class NormalizerService {
     return {
       name: project.name,
       framework: project.framework,
+      id: project.id,
       version: project.version,
       description: project.description,
-      internalName: project.internalName
+      internalName: project.internalName,
+      path: project.path,
+      configured: true
     };
   }
 }

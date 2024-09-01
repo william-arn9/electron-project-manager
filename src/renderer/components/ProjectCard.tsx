@@ -46,7 +46,12 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
 
   const handleDeleteClick = async (e: any) => {
     e.preventDefault();
-    (window as any).electron.deleteDirectory(project.path);
+    if(project.configured) {
+      (window as any).electron.deleteProject(project);
+    }
+    else {
+      (window as any).electron.deleteDirectory(project.path);
+    }
     setDeleted(true);
   };
 

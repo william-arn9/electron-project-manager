@@ -26,6 +26,7 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
       description,
       internalName: project.name,
       framework,
+      path: project.path,
       id: uuidv4()
     };
     console.log(proj);

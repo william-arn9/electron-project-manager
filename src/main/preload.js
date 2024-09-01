@@ -6,7 +6,8 @@ contextBridge.exposeInMainWorld('electron', {
     deleteDirectory: (directory) => ipcRenderer.invoke('delete-project', directory),
     getProjects: () => ipcRenderer.invoke('get-projects'),
     addProject: (project) => ipcRenderer.invoke('add-project', project),
-    editProject: (project) => ipcRenderer.invoke('edit-project', project)
+    editProject: (project) => ipcRenderer.invoke('edit-project', project),
+    deleteProject: (project) => ipcRenderer.invoke('delete-project', project)
 });
 
 window.addEventListener('DOMContentLoaded', () => {
