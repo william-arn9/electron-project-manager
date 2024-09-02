@@ -88,7 +88,7 @@ const HomePage: React.FC = () => {
       <ConfigureModal
         project={modalContext}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={(val: boolean | null | undefined) => { if(val) handleSearches(); setIsModalOpen(false); }}
       />
     </div>
   );

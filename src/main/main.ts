@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { exec } from 'child_process';
 import * as path from 'path';
 import * as url from 'url';
@@ -101,6 +101,10 @@ ipcMain.handle('open-vscode', (event, projectPath: string) => {
   openVSCode(projectPath);
 });
 
+ipcMain.handle('open-in-file-explorer', (event, directory: string) => {
+  openInFileExplorer(directory);
+});
+
 function openVSCode(projectPath: string): void {
   console.log(`${projectPath}`);
   const command = `code ${projectPath} -n`;
@@ -145,4 +149,14 @@ async function deleteDirectory(dirPath: string): Promise<void> {
   } catch (error) {
     console.error(`Error deleting directory ${dirPath}:`, error);
   }
+}
+
+function openInFileExplorer(dirPath: string): void {
+  shell.openPath(dirPath)
+    .then(() => {
+      console.log(`Opened ${dirPath} in file explorer.`);
+    })
+    .catch((error: Error) => {
+      console.error(`Failed to open ${dirPath} in file explorer:`, error);
+    });
 }

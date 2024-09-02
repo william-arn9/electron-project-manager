@@ -37,6 +37,8 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
 
   const handleFileExplorerClick = (e: any) => {
     e.preventDefault();
+    (window as any).electron.openInFileExplorer(project.path);
+    setOptionsOpen(false);
   };
 
   const handleConfigureClick = (e: any) => {

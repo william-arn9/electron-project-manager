@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface ConfigureModalProps {
   project: any,
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (val: boolean | null | undefined) => void;
 }
 
 const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClose }) => {
@@ -29,10 +29,9 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
       path: project.path,
       id: uuidv4()
     };
-    console.log(proj);
     (window as any).electron.addProject(proj);
 
-    onClose();
+    onClose(true);
   };
 
   const showIcon = () => {
@@ -53,7 +52,7 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={() => onClose(false)}>
           &times;
         </button>
         <h3><span className="icon">{showIcon()}</span> { kabobToCapitalCase(project.name) }</h3>
@@ -81,7 +80,7 @@ const ConfigureModal: React.FC<ConfigureModalProps> = ({ project, isOpen, onClos
           <button type="submit" className="submit-button">
             Submit
           </button>
-          <button type="button" className="cancel-button" onClick={(e) => {e.preventDefault(); onClose();}}>
+          <button type="button" className="cancel-button" onClick={(e) => {e.preventDefault(); onClose(false);}}>
             Cancel
           </button>
         </form>
