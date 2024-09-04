@@ -1,0 +1,30 @@
+.new-project-wrapper {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: #f8f8fa;
+  box-sizing: border-box;
+  box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+  -webkit-box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+  -moz-box-shadow: 10px 10px 20px -14px rgba(59,61,74,0.6);
+  * {
+    box-sizing: border-box;
+  }
+}
+
+i {
+  margin: auto 0; 
+  width: 100%;
+  text-align: center;
+  font-size: 4rem;
+  &.fa-react {
+    color: #61DBFB;
+  }
+  &.fa-angular {
+    color: #dd1b16;
+  }
+  &.fa-vuejs {
+    color: #41b883;
+  }
+}

@@ -79,7 +79,7 @@ const ProjectCard: React.FC<any> = ({project, onConfigure}) => {
         </a>
         {optionsOpen && (
           <div className="options-list" ref={optionsRef}>
-            <a className="option" onClick={(e) => {handleConfigureClick(e); setOptionsOpen(false)}}>Configure</a>
+            {!project.configured && (<a className="option" onClick={(e) => {handleConfigureClick(e); setOptionsOpen(false)}}>Configure</a>)}
             <a className="option" onClick={(e) => {handleFileExplorerClick(e); setOptionsOpen(false)}}>Open in file explorer</a>
             <a className="option" onClick={(e) => {handleDuplicateClick(e); setOptionsOpen(false)}}>Duplicate</a>
             <a className="option" onClick={(e) => {handleDeleteClick(e); setOptionsOpen(false)}}>Delete</a>

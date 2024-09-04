@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
 
   const startNewProject = (framework: string) => {
     console.log(`Opening a new ${framework} project`);
-    navigate('new-project');
+    navigate(`new-project?framework=${framework}`);
   };
 
   const handleSearches = async (useCache?: boolean) => {

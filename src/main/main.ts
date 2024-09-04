@@ -6,6 +6,7 @@ import { promises as fs } from 'fs';
 import { StoreService } from './services/store.service';
 import { Project } from './models/app.models';
 import { searchForNpmProjects } from './services/project-search.service';
+import { v4 as uuidv4 } from 'uuid';
 
 let mainWindow: BrowserWindow | null;
 
@@ -103,6 +104,42 @@ ipcMain.handle('open-vscode', (event, projectPath: string) => {
 
 ipcMain.handle('open-in-file-explorer', (event, directory: string) => {
   openInFileExplorer(directory);
+});
+
+ipcMain.on('create-react-project', (event, projectData) => {
+  console.log(projectData);
+  const projectPath = path.join(app.getPath('desktop'), projectData.internalName);
+
+  exec(`npx create-react-app ${projectPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.warn(`Stderr: ${stderr}`);
+    }
+    console.log(`Stdout: ${stdout}`);
+    const proj = {
+      name: projectData.name,
+      internalName: projectData.internalName,
+      id: uuidv4(),
+      description: projectData.description,
+      framework: 'react',
+      path: projectPath
+    } as Project;
+    storeService.addProject(proj);
+
+    // Command to open the project in VSCode
+    exec(`code ${projectPath}`, (err, out, errOutput) => {
+      if (err) {
+        console.error(`Error: ${err.message}`);
+      }
+      if (errOutput) {
+        console.error(`Stderr: ${errOutput}`);
+      }
+      console.log(`Stdout: ${out}`);
+    });
+  });
 });
 
 function openVSCode(projectPath: string): void {
