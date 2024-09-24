@@ -9,7 +9,9 @@ contextBridge.exposeInMainWorld('electron', {
     addProject: (project) => ipcRenderer.invoke('add-project', project),
     editProject: (project) => ipcRenderer.invoke('edit-project', project),
     deleteProject: (project) => ipcRenderer.invoke('delete-project', project),
-    createReactProject: (projectData) => ipcRenderer.send('create-react-project', projectData)
+    createReactProject: (projectData) => ipcRenderer.send('create-react-project', projectData),
+    // Replies
+    onReactProjectReply: (callback) => ipcRenderer.on('create-react-project-reply', (event, data) => callback(data))
 });
 
 window.addEventListener('DOMContentLoaded', () => {

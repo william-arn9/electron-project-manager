@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './NewProjectPage.scss';
 
 const NewProjectPage: React.FC = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const framework = params.get('framework');
+  const [loading, setLoading] = useState(0);
   const [projectName, setProjectName] = useState('');
   const [internalName, setInternalName] = useState('');
   const [description, setDescription] = useState('');
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    (window as any).electron.onReactProjectReply((data: any) => {
+      const result = handleProjectReply(data);
+      console.log(result);
+    });
+  }, []);
+
+  const handleProjectReply = (data: any) => {
+    setLoading(loading - 1);
+    if (data.success) {
+      console.log('Success:', data.message);
+      navigate('/');
+      return { status: 'success', message: data.message };
+    } else {
+      console.error('Failure:', data.message);
+      navigate('error');
+      return { status: 'failure', message: data.message };
+    }
+  };
   const handleSubmit = (e: any) => {
       e.preventDefault();
       if (projectName.trim()) {
+          setLoading(loading + 1);
           (window as any).electron.createReactProject({name: projectName, description, internalName});
       }
   };
@@ -31,6 +53,11 @@ const NewProjectPage: React.FC = () => {
 
   return (
     <div className="new-project-wrapper">
+      {loading > 0 && (
+        <div className="overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <header>{showIcon()}</header>
       <form onSubmit={handleSubmit}>
           <label>
@@ -58,7 +85,10 @@ const NewProjectPage: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
               />
           </label>
-          <button type="submit">Create Project</button>
+          <div className="button-wrapper">
+            <button type="submit">Create Project</button>
+            <button type="button" onClick={() => {navigate('/')}}>Back to Home</button>
+          </div>
       </form>
     </div>
   );

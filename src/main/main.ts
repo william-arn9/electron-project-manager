@@ -113,12 +113,14 @@ ipcMain.on('create-react-project', (event, projectData) => {
   exec(`npx create-react-app ${projectPath}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error.message}`);
+      event.reply('create-react-project-reply', { success: false, message: `Error creating project: ${error.message}` });
       return;
     }
     if (stderr) {
       console.warn(`Stderr: ${stderr}`);
     }
     console.log(`Stdout: ${stdout}`);
+    
     const proj = {
       name: projectData.name,
       internalName: projectData.internalName,
@@ -133,11 +135,14 @@ ipcMain.on('create-react-project', (event, projectData) => {
     exec(`code ${projectPath}`, (err, out, errOutput) => {
       if (err) {
         console.error(`Error: ${err.message}`);
+        event.reply('create-react-project-reply', { success: false, message: `Error opening project in VSCode: ${err.message}` });
+        return;
       }
       if (errOutput) {
         console.error(`Stderr: ${errOutput}`);
       }
       console.log(`Stdout: ${out}`);
+      event.reply('create-react-project-reply', { success: true, message: 'Project created and opened in VSCode successfully' });
     });
   });
 });
