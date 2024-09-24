@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { exec } from 'child_process';
 import * as path from 'path';
 import * as url from 'url';
+import * as fsSync from 'fs';
 import { promises as fs } from 'fs';
 import { StoreService } from './services/store.service';
 import { Project } from './models/app.models';
@@ -113,7 +114,7 @@ ipcMain.on('create-react-project', (event, projectData) => {
   exec(`npx create-react-app ${projectPath}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error.message}`);
-      event.reply('create-react-project-reply', { success: false, message: `Error creating project: ${error.message}` });
+      event.reply('create-project-reply', { success: false, message: `Error creating project: ${error.message}` });
       return;
     }
     if (stderr) {
@@ -135,16 +136,68 @@ ipcMain.on('create-react-project', (event, projectData) => {
     exec(`code ${projectPath}`, (err, out, errOutput) => {
       if (err) {
         console.error(`Error: ${err.message}`);
-        event.reply('create-react-project-reply', { success: false, message: `Error opening project in VSCode: ${err.message}` });
+        event.reply('create-project-reply', { success: false, message: `Error opening project in VSCode: ${err.message}` });
         return;
       }
       if (errOutput) {
         console.error(`Stderr: ${errOutput}`);
       }
       console.log(`Stdout: ${out}`);
-      event.reply('create-react-project-reply', { success: true, message: 'Project created and opened in VSCode successfully' });
+      event.reply('create-project-reply', { success: true, message: 'Project created and opened in VSCode successfully' });
     });
   });
+});
+
+ipcMain.on('create-angular-project', (event, projectData) => {
+  console.log(projectData);
+
+  const projectPath = path.resolve(app.getPath('desktop'), projectData.internalName);
+
+  const routingOption = projectData.addRouting ? '--routing' : '--no-routing';
+  const styleOption = `--style=${projectData.style}`;
+
+  if (!fsSync.existsSync(projectPath)) {
+    fsSync.mkdirSync(projectPath, { recursive: true });
+  }
+
+  exec(`npx @angular/cli new ${projectData.internalName} ${routingOption} ${styleOption}`, 
+    { cwd: app.getPath('desktop') },
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+        event.reply('create-project-reply', { success: false, message: `Error creating project: ${error.message}` });
+        return;
+      }
+      if (stderr) {
+        console.warn(`Stderr: ${stderr}`);
+      }
+      console.log(`Stdout: ${stdout}`);
+      
+      const proj = {
+        name: projectData.name,
+        internalName: projectData.internalName,
+        id: uuidv4(),
+        description: projectData.description,
+        framework: 'angular',
+        path: projectPath
+      } as Project;
+      storeService.addProject(proj);
+
+      // Command to open the project in VSCode
+      exec(`code ${projectPath}`, (err, out, errOutput) => {
+        if (err) {
+          console.error(`Error: ${err.message}`);
+          event.reply('create-project-reply', { success: false, message: `Error opening project in VSCode: ${err.message}` });
+          return;
+        }
+        if (errOutput) {
+          console.error(`Stderr: ${errOutput}`);
+        }
+        console.log(`Stdout: ${out}`);
+        event.reply('create-project-reply', { success: true, message: 'Angular project created and opened in VSCode successfully' });
+      });
+    }
+  );
 });
 
 function openVSCode(projectPath: string): void {

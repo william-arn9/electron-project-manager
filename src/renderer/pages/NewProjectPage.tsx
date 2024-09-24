@@ -10,10 +10,12 @@ const NewProjectPage: React.FC = () => {
   const [projectName, setProjectName] = useState('');
   const [internalName, setInternalName] = useState('');
   const [description, setDescription] = useState('');
+  const [addRouting, setAddRouting] = useState(true);
+  const [style, setStyle] = useState('scss');
   const navigate = useNavigate();
 
   useEffect(() => {
-    (window as any).electron.onReactProjectReply((data: any) => {
+    (window as any).electron.onProjectReply((data: any) => {
       const result = handleProjectReply(data);
       console.log(result);
     });
@@ -34,8 +36,21 @@ const NewProjectPage: React.FC = () => {
   const handleSubmit = (e: any) => {
       e.preventDefault();
       if (projectName.trim()) {
-          setLoading(loading + 1);
-          (window as any).electron.createReactProject({name: projectName, description, internalName});
+        setLoading(loading + 1);
+        switch(framework){
+          case 'react':
+            (window as any).electron.createReactProject({name: projectName, description, internalName});
+            break;
+          case 'angular':
+            (window as any).electron.createAngularProject({
+              name: projectName,
+              description,
+              internalName,
+              addRouting,
+              style
+            });
+            break;
+        }
       }
   };
   const showIcon = () => {
@@ -83,8 +98,32 @@ const NewProjectPage: React.FC = () => {
               <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder='Optional'
               />
           </label>
+          {framework === 'angular' && (
+            <>
+              <label className="switch">
+                Add Routing:
+                <input
+                  type="checkbox"
+                  checked={addRouting}
+                  onChange={(e) => setAddRouting(e.target.checked)}
+                />
+                <span className="slider"></span>
+              </label>
+              <label>
+                Stylesheet Format:
+                <select value={style} onChange={(e) => setStyle(e.target.value)} required>
+                  <option value="css">CSS</option>
+                  <option value="scss">SCSS</option>
+                  <option value="sass">SASS</option>
+                  <option value="less">LESS</option>
+                  <option value="styl">Stylus</option>
+                </select>
+              </label>
+            </>
+          )}
           <div className="button-wrapper">
             <button type="submit">Create Project</button>
             <button type="button" onClick={() => {navigate('/')}}>Back to Home</button>
